@@ -3,7 +3,7 @@ import platform
 from base64 import b64encode
 from datetime import datetime
 from os import path as ospath
-from pkg_resources import get_distribution, DistributionNotFound
+from importlib.metadata import version, PackageNotFoundError
 from aiofiles import open as aiopen
 from aiofiles.os import remove as aioremove, path as aiopath, mkdir
 from re import match as re_match
@@ -167,12 +167,13 @@ def get_all_versions():
     except FileNotFoundError:
         vr = ''
     try:
-        vpy = get_distribution('pyrogram').version
-    except DistributionNotFound:
-        try:
-            vpy = get_distribution('pyrofork').version
-        except DistributionNotFound:
-            vpy = "2.xx.xx"
+    vpy = version("wzgram")
+except PackageNotFoundError:
+    try:
+        vpy = version("pyrogram")
+    except PackageNotFoundError:
+        vpy = "unknown"
+        
     bot_cache['eng_versions'] = {'p7zip':vp, 'ffmpeg': vf, 'rclone': vr,
                                     'aria': aria2.client.get_version()['version'],
                                     'aiohttp': get_distribution('aiohttp').version,
