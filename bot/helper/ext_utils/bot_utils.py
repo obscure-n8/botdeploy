@@ -156,33 +156,39 @@ def get_all_versions():
         vp = result.stdout.split('\n')[2].split(' ')[2]
     except FileNotFoundError:
         vp = ''
+
     try:
         result = srun([bot_cache['pkgs'][2], '-version'], capture_output=True, text=True)
         vf = result.stdout.split('\n')[0].split(' ')[2].split('ubuntu')[0]
     except FileNotFoundError:
         vf = ''
+
     try:
         result = srun([bot_cache['pkgs'][3], 'version'], capture_output=True, text=True)
         vr = result.stdout.split('\n')[0].split(' ')[1]
     except FileNotFoundError:
         vr = ''
-    try:
-    vpy = version("wzgram")
-except PackageNotFoundError:
-    try:
-        vpy = version("pyrogram")
-    except PackageNotFoundError:
-        vpy = "unknown"
-        
-    bot_cache['eng_versions'] = {'p7zip':vp, 'ffmpeg': vf, 'rclone': vr,
-                                    'aria': aria2.client.get_version()['version'],
-                                    'aiohttp': get_distribution('aiohttp').version,
-                                    'gapi': get_distribution('google-api-python-client').version,
-                                    'mega': MegaApi('test').getVersion(),
-                                    'qbit': get_client().app.version,
-                                    'pyro': vpy,
-                                    'ytdlp': get_distribution('yt-dlp').version}
 
+    try:
+        vpy = version("wzgram")
+    except PackageNotFoundError:
+        try:
+            vpy = version("pyrogram")
+        except PackageNotFoundError:
+            vpy = "unknown"
+
+    bot_cache['eng_versions'] = {
+        'p7zip': vp,
+        'ffmpeg': vf,
+        'rclone': vr,
+        'aria': aria2.client.get_version()['version'],
+        'aiohttp': version('aiohttp'),
+        'gapi': version('google-api-python-client'),
+        'mega': MegaApi('test').getVersion(),
+        'qbit': get_client().app.version,
+        'pyro': vpy,
+        'ytdlp': version('yt-dlp')
+    }
 
 class EngineStatus:
     def __init__(self):
