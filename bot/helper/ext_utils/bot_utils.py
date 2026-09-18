@@ -3,7 +3,7 @@ import platform
 from base64 import b64encode
 from datetime import datetime
 from os import path as ospath
-from importlib.metadata import version, PackageNotFoundError
+from pkg_resources import get_distribution, DistributionNotFound
 from aiofiles import open as aiopen
 from aiofiles.os import remove as aioremove, path as aiopath, mkdir
 from re import match as re_match
@@ -156,39 +156,32 @@ def get_all_versions():
         vp = result.stdout.split('\n')[2].split(' ')[2]
     except FileNotFoundError:
         vp = ''
-
     try:
         result = srun([bot_cache['pkgs'][2], '-version'], capture_output=True, text=True)
         vf = result.stdout.split('\n')[0].split(' ')[2].split('ubuntu')[0]
     except FileNotFoundError:
         vf = ''
-
     try:
         result = srun([bot_cache['pkgs'][3], 'version'], capture_output=True, text=True)
         vr = result.stdout.split('\n')[0].split(' ')[1]
     except FileNotFoundError:
         vr = ''
-
     try:
-        vpy = version("wzgram")
-    except PackageNotFoundError:
+        vpy = get_distribution('pyrogram').version
+    except DistributionNotFound:
         try:
-            vpy = version("pyrogram")
-        except PackageNotFoundError:
-            vpy = "unknown"
+            vpy = get_distribution('pyrofork').version
+        except DistributionNotFound:
+            vpy = "2.xx.xx"
+    bot_cache['eng_versions'] = {'p7zip':vp, 'ffmpeg': vf, 'rclone': vr,
+                                    'aria': aria2.client.get_version()['version'],
+                                    'aiohttp': get_distribution('aiohttp').version,
+                                    'gapi': get_distribution('google-api-python-client').version,
+                                    'mega': MegaApi('test').getVersion(),
+                                    'qbit': get_client().app.version,
+                                    'pyro': vpy,
+                                    'ytdlp': get_distribution('yt-dlp').version}
 
-    bot_cache['eng_versions'] = {
-        'p7zip': vp,
-        'ffmpeg': vf,
-        'rclone': vr,
-        'aria': aria2.client.get_version()['version'],
-        'aiohttp': version('aiohttp'),
-        'gapi': version('google-api-python-client'),
-        'mega': MegaApi('test').getVersion(),
-        'qbit': get_client().app.version,
-        'pyro': vpy,
-        'ytdlp': version('yt-dlp')
-    }
 
 class EngineStatus:
     def __init__(self):
