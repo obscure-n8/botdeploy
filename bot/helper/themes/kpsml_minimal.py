@@ -44,7 +44,8 @@ class MinimalTheme:
         '<b>NOTE: <i>Click on any CMD to see more minor details.</i></b>'
     )
 
-    BOT_STATS = '''BOT STATISTICS :
+    
+⌬ 𝗕𝗢𝗧 𝗦𝗧𝗔𝗧𝗦 = '''BOT STATISTICS :
 Bot Uptime : {bot_uptime}
 
 RAM ( MEMORY ) :
